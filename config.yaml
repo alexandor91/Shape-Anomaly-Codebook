@@ -1,0 +1,54 @@
+# All hyperparameters from Sec. 4.1 of the paper.
+
+data:
+  num_points: 10000          # Sampled per shape (Sec. 4.1)
+  normalize: true            # Center + unit-sphere scale
+  voxel_grid: 256            # For codebook spatial hash key (Sec. 4.1)
+
+# Patchification: (num_patches, patch_size) per scale.
+# Default = Anomaly-ShapeNet / Real3D-AD (Sec. 4.1):
+#   32 coarse patches × 64 pts, 64 medium × 32 pts, 192 fine × 8 pts
+# Industrial = (8, 192), (32, 64), (64, 32)
+patches:
+  scales:
+    - [32, 64]
+    - [64, 32]
+    - [192, 8]
+
+model:
+  feature_dim: 32            # Encoder output dim (Sec. 3.2)
+  attention_heads: 8
+  attention_head_dim: 64
+  encoder_hidden: 64
+
+codebook:
+  threshold: 0.85            # τ for cosine-similarity merge (Alg. 1)
+  hash_grid: 32              # Spatial hash grid resolution
+  max_entries: 4096          # Safety cap per scale
+
+augmentation:
+  severities: [0.001, 0.01, 0.1]
+  types:
+    - sink
+    - concavity
+    - bulges
+    - holes
+    - angle_displacement
+    - plane_missing
+
+loss:
+  lambda_sim: 0.5
+  lambda_bce: 0.5
+  eps: 1.0e-6
+
+train:
+  epochs: 1500
+  optimizer: adam
+  lr: 1.0e-3
+  batch_size: 1              # Per-scene optimization style
+  codebook_warmup_epochs: 1  # First pass populates the codebook
+  save_every: 100
+
+infer:
+  top_k_points: 20           # Sec. 7.2
+  score_threshold: 0.82      # "highly reliable" cutoff (Sec. 7.2)
