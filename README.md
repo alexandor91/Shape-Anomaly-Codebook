@@ -48,6 +48,24 @@ shape_anomaly_codebook/
 - **Scale selection.** We follow Eq. (2): pick the scale with maximal patch
   similarity sum (argmax over scales), not multi-scale fusion. The ablation
   in Table 6 reports 84.2% vs 81.2% in favour of max-selection.
+## Install [MinkowskiEngine](https://github.com/NVIDIA/MinkowskiEngine)
+conda install -c pytorch -c nvidia -c conda-forge pytorch=1.9.0 cudatoolkit=11.1 torchvision
+conda install openblas-devel -c anaconda
+
+# Uncomment the following line to specify the CUDA home. Make sure `$CUDA_HOME/nvcc --version` is 11.X
+# export CUDA_HOME=/usr/local/cuda-11.1
+pip install -U git+https://github.com/NVIDIA/MinkowskiEngine -v --no-deps --install-option="--blas_include_dirs=${CONDA_PREFIX}/include" --install-option="--blas=openblas"
+
+# Or if you want a local MinkowskiEngine
+cd lib
+git clone https://github.com/NVIDIA/MinkowskiEngine.git
+cd MinkowskiEngine
+python setup.py install --blas_include_dirs=${CONDA_PREFIX}/include --blas=openblas
+
+### Conda dependencies
+```bash
+conda install -c pytorch -c nvidia -c conda-forge pytorch=1.9.0 cudatoolkit=11.1 torchvision
+conda install openblas-devel -c anaconda
 
 ## Setup
 
